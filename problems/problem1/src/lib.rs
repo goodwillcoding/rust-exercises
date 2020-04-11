@@ -1,9 +1,15 @@
 pub fn find_largest_element(elems: &Vec<i64>) -> Option<i64> {
-
-    // this will compile (with warnings), but some tests will fail.
-    // replace the code below with your own solution!
-    None
-
+    if elems.is_empty() {
+        return None;
+    } else {
+        let mut biggest = &elems[0];
+        for contender in elems[1..].iter() {
+            if contender > biggest {
+                biggest = contender
+            }
+        }
+        return Some(*biggest);
+    }
 }
 
 #[cfg(test)]

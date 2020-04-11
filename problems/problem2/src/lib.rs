@@ -1,9 +1,9 @@
 pub fn sum_one_to_n(n: u32) -> u32 {
-    // your code for summing all digits from 1 to `n` (inclusive) should go
-    // here (you can remove the sample return of `0`)
-    0
+    // make range from 0 to n + 100, so to include n,
+    // then make it an iter and run sum on the iterator value
+    let sum: u32 = (0..(n + 1)).into_iter().sum();
+    return sum;
 }
-
 
 #[cfg(test)]
 mod test {
