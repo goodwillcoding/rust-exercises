@@ -38,25 +38,25 @@ impl Ord for GameElement {
         // for Rock compared to Paper (meaning `Rock < Paper == true`), but we
         // need to cover all cases.
         match (self, other) {
-            // i have rock, they have paper -> lost
+            // self has rock, other has paper -> lost
             (Rock, Paper) => Less,
-            // i have rock, they have scissors -> won
+            // self has rock, other scissors -> won
             (Rock, Scissors) => Greater,
-            // i have rock, they have rock -> draw
+            // self has  rock, other has rock -> draw
             (Rock, Rock) => Equal,
 
-            // i have paper , they have scissors -> lost
+            // self has paper , other has scissors -> lost
             (Paper, Scissors) => Less,
-            // i have paper, they have rock -> won
+            // self has paper, other has rock -> won
             (Paper, Rock) => Greater,
-            // i have paper, they have rock -> draw
+            // self has paper, other has paper -> draw
             (Paper, Paper) => Equal,
 
-            // i have scissors, they have rock -> lost
+            // self has scissors, other has rock -> lost
             (Scissors, Rock) => Less,
-            // i have scissors, they have rock -> won
+            // self has scissors, other paper -> won
             (Scissors, Paper) => Greater,
-            // i have Scissors, they have rock -> draw
+            // self has scissors, other has scissors -> draw
             (Scissors, Scissors) => Equal,
         }
     }
@@ -76,14 +76,13 @@ impl PartialOrd for GameElement {
 /// Allows callers to randomly generate game choices.
 impl Distribution<GameElement> for Standard {
     fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> GameElement {
-        use GameElement::*;
         // randomly chooses 1, 2, or 3
         let n: u32 = rng.gen_range(1, 4);
 
         match n {
-            1 => Rock,
-            2 => Paper,
-            _ => Scissors,
+            1 => GameElement::Rock,
+            2 => GameElement::Paper,
+            _ => GameElement::Scissors,
         }
     }
 }
