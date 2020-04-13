@@ -8,6 +8,8 @@ use std::str::FromStr;
 /// The base type for representing Rock, Paper, and Scissors, which are all the
 /// possible choices in our game.
 #[derive(PartialEq, Eq)]
+// add Debug trait for testing
+#[derive(Debug)]
 pub enum GameElement {
     Rock,
     Paper,
@@ -137,10 +139,121 @@ mod test {
     fn test_ordering() {
         use GameElement::*;
 
-        // does this test everything we need?
-        assert!(Rock < Paper && Paper < Scissors && Scissors < Rock);
+        // rock loses to paper
+        assert!(Rock < Paper);
+        // rock  beats scissors
+        assert!(Rock > Scissors);
+        // rock and rock is a draw
+        assert!(Rock == Rock);
+
+        // paper loses to scissors
+        assert!(Paper < Scissors);
+        // paper beats rock
+        assert!(Paper > Rock);
+        // paper and paper is a draw
+        assert!(Paper == Paper);
+
+        // scissors loses to rock
+        assert!(Scissors < Rock);
+        // scissors beats rock
+        assert!(Scissors > Paper);
+        // scissors and scissors is a draw
+        assert!(Scissors == Scissors);
     }
 
     // add additional tests to make sure we can parse game elements from
     // strings and also display them
+
+    #[test]
+    fn test_cmp() {
+        use std::cmp::Ordering::*;
+        use GameElement::*;
+
+        // alternative tests using cmp directly
+
+        // rock loses to paper
+        assert_eq!(Rock.cmp(&Paper), Less);
+        // rock  beats scissors
+        assert_eq!(Rock.cmp(&Scissors), Greater);
+        // // rock and rock is a draw
+        assert_eq!(Rock.cmp(&Rock), Equal);
+
+        // paper loses to scissors
+        assert_eq!(Paper.cmp(&Scissors), Less);
+        // paper beats rock
+        assert_eq!(Paper.cmp(&Rock), Greater);
+        // paper and paper is a draw
+        assert_eq!(Paper.cmp(&Paper), Equal);
+
+        // // scissors loses to rock
+        assert_eq!(Scissors.cmp(&Rock), Less);
+        // // scissors beates rock
+        assert_eq!(Scissors.cmp(&Paper), Greater);
+        // scissors and scissors is a draw
+        assert_eq!(Scissors.cmp(&Scissors), Equal);
+    }
+
+    #[test]
+    fn test_partial_cmp() {
+        use std::cmp::Ordering::*;
+        use GameElement::*;
+
+        // alternative tests using cmp directly
+
+        // rock loses to paper
+        assert_eq!(Rock.partial_cmp(&Paper), Some(Less));
+        // rock  beats scissors
+        assert_eq!(Rock.partial_cmp(&Scissors), Some(Greater));
+        // // rock and rock is a draw
+        assert_eq!(Rock.partial_cmp(&Rock), Some(Equal));
+
+        // paper loses to scissors
+        assert_eq!(Paper.partial_cmp(&Scissors), Some(Less));
+        // paper beats rock
+        assert_eq!(Paper.partial_cmp(&Rock), Some(Greater));
+        // paper and paper is a draw
+        assert_eq!(Paper.partial_cmp(&Paper), Some(Equal));
+
+        // // scissors loses to rock
+        assert_eq!(Scissors.partial_cmp(&Rock), Some(Less));
+        // // scissors beates rock
+        assert_eq!(Scissors.partial_cmp(&Paper), Some(Greater));
+        // scissors and scissors is a draw
+        assert_eq!(Scissors.partial_cmp(&Scissors), Some(Equal));
+    }
+
+    #[test]
+    fn test_sample() {
+        use rand::rngs::mock::StepRng;
+        use GameElement::*;
+
+        let mut mock_rng = StepRng::new(1, 1);
+        let elements: [GameElement; 3] = Standard.sample(&mut mock_rng);
+        // as far as I can tell StepRng does not implement range_gen
+        // so range_gen seems to always return 1 and does not
+        // increament on follow up calls, so we get basically [1,1,1] which
+        // translates to Rock
+        assert_eq!(elements, [Rock, Rock, Rock]);
+    }
+
+    #[test]
+    fn test_fmt_display() {
+        use GameElement::*;
+
+        assert_eq!(format!("{}", Rock), "Rock");
+        assert_eq!(format!("{}", Paper), "Paper");
+        assert_eq!(format!("{}", Scissors), "Scissors");
+    }
+
+    #[test]
+    fn test_from_str() {
+        let rock = GameElement::from_str("r\n");
+        assert_eq!(rock.unwrap(), GameElement::Rock);
+
+        let paper = GameElement::from_str("p\n");
+        assert_eq!(paper.unwrap(), GameElement::Paper);
+
+        let scissors = GameElement::from_str("s\n");
+        assert_eq!(scissors.unwrap(), GameElement::Scissors);
+    }
 }
